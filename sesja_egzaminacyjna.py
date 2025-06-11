@@ -8,3 +8,4 @@ class SesjaEgzaminacyjna(Pole):
         self.filename = "sesja_egzaminacyjna.png"
         obraz = Image.open(self.filename).resize((plansza.POLE_X, plansza.POLE_Y))
         self.photo = ImageTk.PhotoImage(obraz)
+        self.pytanie = None
