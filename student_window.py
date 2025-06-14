@@ -161,4 +161,4 @@ def uruchom_okno_student(login):
     tk.Button(okno, text="Rusz o 1 pole", command=rusz_o_jedno_pole).place(x=900, y=700)
     tk.Button(okno, text="Sprawdź pole (test)", command=sprawdz_pole).place(x=900, y=750)
 
-    okno.mainloop()
+    okno.mainloop() 
