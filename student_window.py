@@ -10,6 +10,8 @@ import question_popup
 import threading
 import time
 import os
+from tkinter import messagebox
+from question_popup import aktualizuj_ects
 def zakoncz_gre(okno, gracz):
     tk.messagebox.showinfo("Koniec gry", f"Koniec pytań!\nZdobyte ECTS: {gracz.ects}")
     okno.destroy()  
@@ -134,6 +136,9 @@ def uruchom_okno_student(login):
                 question_popup.pokaz_pytanie(okno, pytanie, gracz)
             else:
                 zakoncz_gre(okno, gracz)
+            messagebox.showinfo("Stypendium", "Otrzymujesz 2 ECTS za stypendium!")
+            gracz.ects += 2
+            aktualizuj_ects(gracz.login, gracz.ects)
     def rusz_o_jedno_pole():
         gracz.pionek.numerPola = (gracz.pionek.numerPola + 1) % len(plansza_do_gry.pola)
         gracz.pionek.wyswietlPionek(plansza_do_gry, gracz.pionek.numerPola)
