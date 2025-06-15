@@ -3,13 +3,28 @@ from PIL import Image, ImageTk
 import random
 
 def zaladuj_grafiki_kostek():
-    return [ImageTk.PhotoImage(Image.open(f"Kostka_{i}.png").resize((100, 100))) for i in range(1, 7)]
+    # Zmieniono rozmiar na 130x130
+    return [ImageTk.PhotoImage(Image.open(f"Kostka_{i}.png").resize((130, 130))) for i in range(1, 7)]
 
 def stworz_labelki_kostek(okno, grafiki):
     label1 = tk.Label(okno, image=grafiki[0], bg="#e2dbd8")
     label2 = tk.Label(okno, image=grafiki[0], bg="#e2dbd8")
-    label1.place(x=1100, y=200)
-    label2.place(x=1250, y=200)
+
+    okno.update_idletasks()
+    szer = okno.winfo_width()
+    wys = okno.winfo_height()
+    if szer == 1:
+        szer = okno.winfo_screenwidth()
+        wys = okno.winfo_screenheight()
+
+    kostka_szer = 130
+    odstęp = 10
+    srodek_x = szer // 2
+    srodek_y = wys // 2 - 80  # przesunięcie w górę o 80 px
+
+    label1.place(x=srodek_x - kostka_szer - odstęp // 2, y=srodek_y)
+    label2.place(x=srodek_x + odstęp // 2, y=srodek_y)
+
     return label1, label2
 
 def animuj_rzut_kostkami(okno, label1, label2, grafiki, callback_wyniku=None):
@@ -39,4 +54,20 @@ def dodaj_przycisk_rzutu(okno, label1, label2, grafiki, callback_wyniku=None):
         okno, text="Rzuć kostkami", font=("Inter", 20), bg="#750006", fg="white",
         command=lambda: animuj_rzut_kostkami(okno, label1, label2, grafiki, callback_wyniku)
     )
-    btn.place(x=1170, y=350)
+
+    okno.update_idletasks()
+    szer = okno.winfo_width()
+    wys = okno.winfo_height()
+    if szer == 1:
+        szer = okno.winfo_screenwidth()
+        wys = okno.winfo_screenheight()
+
+    kostka_wys = 130
+    odstep = 10
+
+    srodek_x = szer // 2
+    srodek_y = wys // 2 - 80  # przesunięcie w górę o 80 px
+
+    btn.place(x=srodek_x - btn.winfo_reqwidth() // 2, y=srodek_y + kostka_wys + odstep)
+
+    return btn

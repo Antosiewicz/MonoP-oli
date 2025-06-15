@@ -2,8 +2,12 @@
   "status": "oczekiwanie",
   "gracze": [
     {
+      "login": "Szymon",
+      "ects": 0
+    },
+    {
       "login": "i",
-      "ects": 1
+      "ects": 0
     }
   ]
 }
