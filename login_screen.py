@@ -2,6 +2,7 @@ import tkinter as tk
 from login import uruchom_logowanie
 from register import uruchom_rejestracje
 import menu
+from PIL import Image, ImageTk
 
 def uruchom_ekran_logowania():
     root = tk.Tk()
@@ -13,12 +14,19 @@ def uruchom_ekran_logowania():
     root.geometry(f"{screen_width}x{screen_height}")
     root.configure(bg="#e2dbd8")
 
-    tk.Label(root, text="Witaj, Studencie!", font=("Arial", 18), bg="#e2dbd8").pack(pady=20)
+    # Tworzenie tła
+    tlo = tk.Canvas(root, width=screen_width, height=screen_height)
+    tlo.pack(fill="both", expand=True)
+    bg_i = Image.open("tlo_politechnika_kontury.png").resize((screen_width, screen_height))
+    bg = ImageTk.PhotoImage(bg_i)
+    tlo.create_image(0, 0, image=bg, anchor="nw")
 
-    tk.Button(root, text="Zaloguj się", command=lambda: uruchom_logowanie(root), width=20).pack(pady=10)
-    tk.Button(root, text="Załóż konto", command=lambda: uruchom_rejestracje(root), width=20).pack(pady=10)
+    tk.Label(tlo, text="Witaj, Studencie!", font=("Arial", 18), bg="#e2dbd8").pack(pady=20)
 
-    tk.Button(root, text="Powrót do menu głównego", command=lambda: powrot_do_menu(root), width=25).pack(pady=20)
+    tk.Button(tlo, text="Zaloguj się", command=lambda: uruchom_logowanie(root), width=20).pack(pady=10)
+    tk.Button(tlo, text="Załóż konto", command=lambda: uruchom_rejestracje(root), width=20).pack(pady=10)
+
+    tk.Button(tlo, text="Powrót do menu głównego", command=lambda: powrot_do_menu(root), width=25).pack(pady=20)
 
     root.mainloop()
 
