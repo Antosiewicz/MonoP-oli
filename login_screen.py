@@ -26,13 +26,14 @@ def uruchom_ekran_logowania():
     zaloguj_sie_photo = ImageTk.PhotoImage(zaloguj_sie_img)
     zaloz_konto_img = Image.open("przycisk_zaloz_konto.png").resize((400, 100))
     zaloz_konto_photo = ImageTk.PhotoImage(zaloz_konto_img)
+    powrot_img = Image.open("przycisk_powrot.png").resize((400, 100))
+    powrot_photo = ImageTk.PhotoImage(powrot_img)
 
-    tk.Label(tlo, text="Witaj, Studencie!", font=("Arial", 18), bg="#e2dbd8").pack(pady=20)
+    #tk.Label(tlo, text="Witaj, Studencie!", font=("Arial", 18), bg="#e2dbd8").pack(pady=20)
 
     tk.Button(tlo, image=zaloguj_sie_photo, borderwidth=0, command=lambda: uruchom_logowanie(root)).pack(pady=10)
     tk.Button(tlo, image=zaloz_konto_photo, borderwidth=0, command=lambda: uruchom_rejestracje(root)).pack(pady=10)
-
-    tk.Button(tlo, text="Powrót do menu głównego", command=lambda: powrot_do_menu(root), width=25).pack(pady=20)
+    tk.Button(tlo, image=powrot_photo, borderwidth=0, command=lambda: powrot_do_menu(root)).pack(pady=10)
 
     root.mainloop()
 
