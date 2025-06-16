@@ -21,9 +21,13 @@ def uruchom_ekran_logowania():
     bg = ImageTk.PhotoImage(bg_i)
     tlo.create_image(0, 0, image=bg, anchor="nw")
 
+    # wczytanie grafik
+    zaloguj_sie_img = Image.open("przycisk_zaloguj_sie.png").resize((400, 100))
+    zaloguj_sie_photo = ImageTk.PhotoImage(zaloguj_sie_img)
+
     tk.Label(tlo, text="Witaj, Studencie!", font=("Arial", 18), bg="#e2dbd8").pack(pady=20)
 
-    tk.Button(tlo, text="Zaloguj się", command=lambda: uruchom_logowanie(root), width=20).pack(pady=10)
+    tk.Button(tlo, image=zaloguj_sie_photo, borderwidth=0, command=lambda: uruchom_logowanie(root)).pack(pady=10)
     tk.Button(tlo, text="Załóż konto", command=lambda: uruchom_rejestracje(root), width=20).pack(pady=10)
 
     tk.Button(tlo, text="Powrót do menu głównego", command=lambda: powrot_do_menu(root), width=25).pack(pady=20)
