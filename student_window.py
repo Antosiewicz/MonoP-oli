@@ -31,7 +31,10 @@ def zarejestruj_gracza(login):
     for g in gracze:
         if g["login"] == login:
             return g["kolor"]
-
+    if "tura" not in dane:
+        dane["tura"] = 1
+    if "ruchy" not in dane:
+        dane["ruchy"] = {}
     zajete = {g.get("kolor", 0) for g in gracze}
     wolne = [i for i in range(4) if i not in zajete]
     nowy_kolor = wolne[0] if wolne else 0
@@ -113,7 +116,7 @@ def uruchom_okno_student(login):
         except:
             pass
         okno.after(1000, odswiez_ranking)
-
+    
     pionki_innych = {}
 
     def odswiez_pionki():
@@ -154,13 +157,66 @@ def uruchom_okno_student(login):
     plansza_do_gry.WypelnijDomyslnie()
     plansza_do_gry.Rysuj()
     gracz.pionek.wyswietlPionek(plansza_do_gry, gracz.pionek.kolor)
+    def czy_moze_rzucic(gracz):
+        try:
+            with open("gra_status.json", "r", encoding="utf-8") as f:
+                dane = json.load(f)
 
+            tura = dane.get("tura", 1)
+            ruchy = dane.get("ruchy", {})
+
+            return ruchy.get(gracz.login, 0) < tura
+        except:
+            return False
     grafiki_kostek = zaladuj_grafiki_kostek()
     label1, label2 = stworz_labelki_kostek(okno, grafiki_kostek)
 
     def po_rzucie(w1, w2):
+        if not czy_moze_rzucic(gracz):
+            tk.messagebox.showinfo("Tura", "Poczekaj na swoją kolej.")
+            return
+
         suma = w1 + w2
         gracz.pionek.animowany_ruch(plansza_do_gry, gracz.pionek.kolor, suma, sprawdz_pole)
+
+        try:
+            with open("gra_status.json", "r", encoding="utf-8") as f:
+                dane = json.load(f)
+
+            # Zapewnij istnienie "tura" i "ruchy"
+            if "tura" not in dane:
+                dane["tura"] = 1
+            if "ruchy" not in dane:
+                dane["ruchy"] = {}
+
+            # Zwiększ licznik ruchu tego gracza
+            dane["ruchy"][gracz.login] = dane["ruchy"].get(gracz.login, 0) + 1
+
+            # Jeśli wszyscy gracze mają ruchy >= obecnej tury -> nowa tura
+            if all(r >= dane["tura"] for r in dane["ruchy"].values()):
+                dane["tura"] += 1
+
+            with open("gra_status.json", "w", encoding="utf-8") as f:
+                json.dump(dane, f, indent=2)
+
+        except Exception as e:
+            print(f"[Błąd aktualizacji tury]: {e}")
+
+
+
+    # Zaktualizuj liczbę ruchów
+    with open("gra_status.json", "r", encoding="utf-8") as f:
+        dane = json.load(f)
+
+    dane.setdefault("ruchy", {})
+    dane["ruchy"][gracz.login] = dane["ruchy"].get(gracz.login, 0) + 1
+
+    # Jeśli wszyscy wykonali ruch, zwiększ turę
+    if all(r >= dane["tura"] for r in dane["ruchy"].values()):
+        dane["tura"] += 1
+
+    with open("gra_status.json", "w", encoding="utf-8") as f:
+        json.dump(dane, f, indent=2)
 
     dodaj_przycisk_rzutu(okno, label1, label2, grafiki_kostek, po_rzucie)
 
