@@ -100,8 +100,9 @@ def uruchom_okno_prowadzacy():
     dl_planszy=11
     szer_planszy=8
     margin_left=screen_width/2-(szer_planszy/2+1)*pole_x
+    margin_top = screen_height / 2 - (dl_planszy / 2) * pole_y
 
-    plansza_do_gry = Plansza(okno, dl_planszy, szer_planszy, 100, margin_left, pole_x, pole_y)
+    plansza_do_gry = Plansza(okno, dl_planszy, szer_planszy, margin_top, margin_left, pole_x, pole_y)
     plansza_do_gry.WypelnijDomyslnie()
     plansza_do_gry.Rysuj()
 
