@@ -36,7 +36,7 @@ def animuj_rzut_kostkami(okno, label1, label2, grafiki, callback_wyniku=None):
 
 def dodaj_przycisk_rzutu(okno, label1, label2, grafiki, callback_wyniku=None):
     btn = tk.Button(
-        okno, text="Rzuć kostkami", font=("Inter", 20), bg="#750006", fg="white",
+        okno, text="Rzuć kostkami", font=("Georgia", 20), bg="#750006", fg="#d9dad9",
         command=lambda: animuj_rzut_kostkami(okno, label1, label2, grafiki, callback_wyniku)
     )
     btn.place(x=1170, y=350)
