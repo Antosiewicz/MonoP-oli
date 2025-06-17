@@ -41,7 +41,7 @@ def uruchom_okno_prowadzacy():
         width=20,
         height=1
     )
-    edytuj_button.place(x=620, y=400)
+    edytuj_button.place(x=screen_width/2-120, y=400)
 
     def start_gra():
         try:
@@ -57,13 +57,13 @@ def uruchom_okno_prowadzacy():
         with open("gra_status.json", "w", encoding="utf-8") as f:
             json.dump(dane, f, indent=2)
 
-    tk.Button(okno, text="START GRY", command=start_gra, fg="#d9dad9", bg="#750006", font='Georgia', width=20, height=1).place(x=620, y=300)
+    tk.Button(okno, text="START GRY", command=start_gra, fg="#d9dad9", bg="#750006", font='Georgia', width=20, height=1).place(x=screen_width/2-120, y=300)
 
     def reset_gra():
         with open("gra_status.json", "w", encoding="utf-8") as f:
             json.dump({"status": "oczekiwanie", "gracze": []}, f)
 
-    tk.Button(okno, text="RESET GRY", command=reset_gra, fg="#d9dad9", bg="#750006", font='Georgia', width=20, height=1).place(x=620, y=350)
+    tk.Button(okno, text="RESET GRY", command=reset_gra, fg="#d9dad9", bg="#750006", font='Georgia', width=20, height=1).place(x=screen_width/2-120, y=350)
 
     def on_closing():
         with open("gra_status.json", "w", encoding="utf-8") as f:
@@ -96,8 +96,13 @@ def uruchom_okno_prowadzacy():
             print(f"[Błąd odświeżania rankingu]: {e}")
 
         okno.after(1000, odswiez_ranking)
+    pole_x=70
+    pole_y=50
+    dl_planszy=11
+    szer_planszy=8
+    margin_left=screen_width/2-(szer_planszy/2+1)*pole_x
 
-    plansza_do_gry = Plansza(okno, 11, 8, 100, 400, 70, 50)
+    plansza_do_gry = Plansza(okno, dl_planszy, szer_planszy, 100, margin_left, pole_x, pole_y)
     plansza_do_gry.WypelnijDomyslnie()
     plansza_do_gry.Rysuj()
 
