@@ -27,6 +27,21 @@ def zarejestruj_gracza(login):
     except FileNotFoundError:
         dane = {"status": "oczekiwanie", "gracze": []}
 
+    # 🚫 Blokada dołączenia po starcie gry
+    if dane.get("status") == "start":
+        tk.messagebox.showerror("Błąd", "Gra już się rozpoczęła. Nie możesz dołączyć.")
+        exit()  # albo return None i obsłuż to wyżej
+
+    gracze = dane.get("gracze", [])
+    for g in gracze:
+        if g["login"] == login:
+            return g["kolor"]
+    try:
+        with open("gra_status.json", "r", encoding="utf-8") as f:
+            dane = json.load(f)
+    except FileNotFoundError:
+        dane = {"status": "oczekiwanie", "gracze": []}
+
     gracze = dane.get("gracze", [])
     for g in gracze:
         if g["login"] == login:
@@ -68,15 +83,15 @@ def uruchom_okno_student(login):
     okno.geometry(f"{screen_width}x{screen_height}")
     okno.configure(bg="#e2dbd8")
 
-    powrot_img = Image.open("powrot.png").resize((210, 70))
-    powrot_photo = ImageTk.PhotoImage(powrot_img)
-    powrot_button = tk.Button(okno, image=powrot_photo, command=lambda: powrot_przycisk(okno), borderwidth=0)
-    powrot_button.image = powrot_photo
+    #powrot_img = Image.open("powrot.png").resize((210, 70))
+    #powrot_photo = ImageTk.PhotoImage(powrot_img)
+    powrot_button = tk.Button(okno, text="POWRÓT", command=lambda: powrot_przycisk(okno), font="Georgia 25", fg="#d9dad9", bg="#750006")
+    #powrot_button.image = powrot_photo
     powrot_button.place(x=50, y=30)
 
     ectsy_tlo = tk.Canvas(okno, width=210, height=70, bg="#750006")
     ectsy_tlo.place(x=50, y=120)
-    ectsy_tlo.create_text(105, 35, text="ECTSY: ", fill="white", font='Inter 25')
+    ectsy_tlo.create_text(105, 35, text="ECTSY: ", fill="#d9dad9", font='Georgia 25')
 
     logo_img = Image.open("logo2.png").resize((800, 700))
     logo_photo = ImageTk.PhotoImage(logo_img)
@@ -90,7 +105,7 @@ def uruchom_okno_student(login):
 
     ranking_header = tk.Canvas(okno, width=227, height=50, bg="#750006", highlightthickness=0)
     ranking_header.place(x=50, y=200)
-    ranking_header.create_text(113, 25, text="RANKING:", fill="white", font=('Inter', 20, 'bold'))
+    ranking_header.create_text(113, 25, text="RANKING:", fill="#d9dad9", font=('Georgia', 20, 'bold'))
 
     ranking_canvas = tk.Canvas(okno, width=227, height=450, bg="#750006", highlightthickness=0)
     ranking_canvas.place(x=50, y=250)
@@ -223,6 +238,13 @@ def uruchom_okno_student(login):
     def sprawdz_pole():
         pole = plansza_do_gry.pola[gracz.pionek.numerPola]
         typ = type(pole).__name__
+        if hasattr(pole, "akcja"):
+            pole.akcja(gracz)
+        if typ == "Stypendium":
+            gracz.ects += 2
+            zapisz_pozycje_gracza()
+            question_popup.aktualizuj_ects(gracz.login,gracz.ects)
+            tk.messagebox.showinfo("Stypendium", "+2 ECTS za stypendium!")
         if typ == "SprawdzenieWiedzy" and gracz.pytania_wiedza:
             pytanie = gracz.pytania_wiedza.pop(0)
             question_popup.pokaz_pytanie(okno, pytanie, gracz)

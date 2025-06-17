@@ -49,5 +49,6 @@ def dodaj_przycisk_rzutu(okno, label1, label2, grafiki, callback_wyniku=None):
     btn = tk.Button(
         okno, text="Rzuć kostkami", font=("Inter", 20), bg="#750006", fg="white",
         command=przycisk_click
+
     )
     btn.place(x=1170, y=350)
