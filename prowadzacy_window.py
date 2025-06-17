@@ -7,7 +7,6 @@ import os
 from plansza import Plansza
 from pionek import Pionek, pos
 
-
 def powrot_przycisk(okno):
     okno.destroy()
     menu.main()
@@ -96,8 +95,8 @@ def uruchom_okno_prowadzacy():
             print(f"[Błąd odświeżania rankingu]: {e}")
 
         okno.after(1000, odswiez_ranking)
-    pole_x=70
-    pole_y=50
+    pole_x = int(screen_width/15)
+    pole_y=int(screen_height/14)
     dl_planszy=11
     szer_planszy=8
     margin_left=screen_width/2-(szer_planszy/2+1)*pole_x
