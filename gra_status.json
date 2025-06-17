@@ -1,15 +1,15 @@
 {
-  "status": "start",
+  "status": "oczekiwanie",
   "gracze": [
     {
-      "login": "Szymon",
+      "login": "i",
       "ects": 0,
       "kolor": 0,
-      "pole": 16
+      "pole": 0
     }
   ],
-  "tura": 41,
+  "tura": 5,
   "ruchy": {
-    "Szymon": 40
+    "i": 4
   }
 }
