@@ -1,6 +1,15 @@
 import tkinter as tk
 from PIL import Image, ImageTk
 import random
+import pygame
+
+pygame.mixer.init()
+
+def odtworz_dzwiek():
+    try:
+        pygame.mixer.Sound('rolling_dice.mp3').play()
+    except Exception as e:
+        print(f"Błąd dźwięku: {e}")
 
 def zaladuj_grafiki_kostek():
     return [ImageTk.PhotoImage(Image.open(f"Kostka_{i}.png").resize((100, 100))) for i in range(1, 7)]
@@ -31,12 +40,15 @@ def animuj_rzut_kostkami(okno, label1, label2, grafiki, callback_wyniku=None):
             rzut_wynik['kostka2'] = wynik2
             if callback_wyniku:
                 callback_wyniku(wynik1, wynik2)
-
     animuj()
 
 def dodaj_przycisk_rzutu(okno, label1, label2, grafiki, callback_wyniku=None):
+    def przycisk_click():
+        odtworz_dzwiek()
+        animuj_rzut_kostkami(okno, label1, label2, grafiki, callback_wyniku)
     btn = tk.Button(
-        okno, text="Rzuć kostkami", font=("Georgia", 20), bg="#750006", fg="#d9dad9",
-        command=lambda: animuj_rzut_kostkami(okno, label1, label2, grafiki, callback_wyniku)
+        okno, text="Rzuć kostkami", font=("Inter", 20), bg="#750006", fg="white",
+        command=przycisk_click
+
     )
     btn.place(x=1170, y=350)
