@@ -100,7 +100,7 @@ def uruchom_okno_student(login):
     logo_label.place(x=300, y=-280)
 
     ladowanie_tlo = tk.Canvas(okno, width=450, height=330, bg="#f3eee6")
-    ladowanie_tlo.place(x=520, y=220)
+    ladowanie_tlo.place(x=screen_width/2-225, y=220)
     ladowanie_tlo.create_text(250, 50, text="Oczekiwanie aż\nprowadzący zacznie grę", fill="black", font='Inter 25')
 
     ranking_header = tk.Canvas(okno, width=227, height=50, bg="#750006", highlightthickness=0)
@@ -168,7 +168,13 @@ def uruchom_okno_student(login):
 
         okno.after(1000, odswiez_pionki)
 
-    plansza_do_gry = Plansza(okno, 11, 8, 100, 400, 70, 50)
+    pole_x = int(screen_width / 15)
+    pole_y = int(screen_height / 14)
+    dl_planszy = 11
+    szer_planszy = 8
+    margin_left = screen_width / 2 - (szer_planszy / 2 + 1) * pole_x
+
+    plansza_do_gry = Plansza(okno, dl_planszy, szer_planszy, 100, margin_left, pole_x, pole_y)
     plansza_do_gry.WypelnijDomyslnie()
     plansza_do_gry.Rysuj()
     gracz.pionek.wyswietlPionek(plansza_do_gry, gracz.pionek.kolor)

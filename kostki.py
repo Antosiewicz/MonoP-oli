@@ -8,8 +8,10 @@ def zaladuj_grafiki_kostek():
 def stworz_labelki_kostek(okno, grafiki):
     label1 = tk.Label(okno, image=grafiki[0], bg="#e2dbd8")
     label2 = tk.Label(okno, image=grafiki[0], bg="#e2dbd8")
-    label1.place(x=1100, y=200)
-    label2.place(x=1250, y=200)
+    screen_width = okno.winfo_screenwidth()
+    screen_height = okno.winfo_screenheight()
+    label1.place(x=screen_width/2-75-25, y=screen_height/3)
+    label2.place(x=screen_width/2+25, y=screen_height/3)
     return label1, label2
 
 def animuj_rzut_kostkami(okno, label1, label2, grafiki, callback_wyniku=None):
@@ -39,4 +41,6 @@ def dodaj_przycisk_rzutu(okno, label1, label2, grafiki, callback_wyniku=None):
         okno, text="Rzuć kostkami", font=("Georgia", 20), bg="#750006", fg="#d9dad9",
         command=lambda: animuj_rzut_kostkami(okno, label1, label2, grafiki, callback_wyniku)
     )
-    btn.place(x=1170, y=350)
+    screen_width = okno.winfo_screenwidth()
+    screen_height = okno.winfo_screenheight()
+    btn.place(x=screen_width/2-85, y=screen_height/3+125)
