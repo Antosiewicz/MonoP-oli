@@ -1,4 +1,4 @@
-from PIL import Image, ImageTk
+from PIL import Image, ImageTk,ImageSequence
 import tkinter as tk
 import menu
 import json
@@ -98,10 +98,23 @@ def uruchom_okno_student(login):
     logo_label = tk.Label(okno, image=logo_photo, bg="#e2dbd8")
     logo_label.image = logo_photo
     logo_label.place(x=300, y=-280)
+    gif = Image.open("loading.gif")
+    gif_frames = [ImageTk.PhotoImage(frame.copy().convert("RGBA")) for frame in ImageSequence.Iterator(gif)]
+    gif_index = 0
 
     ladowanie_tlo = tk.Canvas(okno, width=450, height=330, bg="#f3eee6")
+
     ladowanie_tlo.place(x=screen_width/2-225, y=220)
-    ladowanie_tlo.create_text(250, 50, text="Oczekiwanie aż\nprowadzący zacznie grę", fill="black", font='Inter 25')
+    ladowanie_tlo.create_text(250, 50, text="Oczekiwanie aż\nprowadzący zacznie grę", fill="black", font='Inter 25'
+    gif_img_id = ladowanie_tlo.create_image(225, 165, image=gif_frames[0])  # center
+
+    def animuj_gif():
+        nonlocal gif_index
+        gif_index = (gif_index + 1) % len(gif_frames)
+        ladowanie_tlo.itemconfig(gif_img_id, image=gif_frames[gif_index])
+        okno.after(25, animuj_gif)
+
+    animuj_gif()
 
     ranking_header = tk.Canvas(okno, width=227, height=50, bg="#750006", highlightthickness=0)
     ranking_header.place(x=50, y=200)
@@ -178,6 +191,24 @@ def uruchom_okno_student(login):
     plansza_do_gry = Plansza(okno, dl_planszy, szer_planszy, margin_top, margin_left, pole_x, pole_y)
     plansza_do_gry.WypelnijDomyslnie()
     plansza_do_gry.Rysuj()
+    def sprawdz_start():
+        while True:
+            time.sleep(1)
+            if not os.path.exists("gra_status.json"):
+                continue
+            with open("gra_status.json", "r", encoding="utf-8") as f:
+                dane = json.load(f)
+            if dane["status"] == "start":
+                ladowanie_tlo.destroy()
+                plansza_do_gry.Rysuj()
+                gracz.pionek.wyswietlPionek(plansza_do_gry, gracz.pionek.kolor)
+
+                # 👉 dodaj kostki i przycisk dopiero teraz
+                grafiki_kostek = zaladuj_grafiki_kostek()
+                label1, label2 = stworz_labelki_kostek(okno, grafiki_kostek)
+                dodaj_przycisk_rzutu(okno, label1, label2, grafiki_kostek, po_rzucie)
+
+                break
     gracz.pionek.wyswietlPionek(plansza_do_gry, gracz.pionek.kolor)
     def czy_moze_rzucic(gracz):
         try:
@@ -190,8 +221,7 @@ def uruchom_okno_student(login):
             return ruchy.get(gracz.login, 0) < tura
         except:
             return False
-    grafiki_kostek = zaladuj_grafiki_kostek()
-    label1, label2 = stworz_labelki_kostek(okno, grafiki_kostek)
+    
 
     def po_rzucie(w1, w2):
         if not czy_moze_rzucic(gracz):
@@ -239,9 +269,23 @@ def uruchom_okno_student(login):
 
     with open("gra_status.json", "w", encoding="utf-8") as f:
         json.dump(dane, f, indent=2)
+    def sprawdz_reset():
+        gra_rozpoczeta = False
+        while True:
+            time.sleep(1)
+            if not os.path.exists("gra_status.json"):
+                continue
+            with open("gra_status.json", "r", encoding="utf-8") as f:
+                dane = json.load(f)
 
-    dodaj_przycisk_rzutu(okno, label1, label2, grafiki_kostek, po_rzucie)
+            status = dane.get("status", "")
+            if status == "start":
+                gra_rozpoczeta = True
 
+            if gra_rozpoczeta and status == "oczekiwanie":
+                tk.messagebox.showinfo("Reset gry", f"Gra została zresetowana.\nZdobyte ECTS: {gracz.ects}")
+                okno.destroy()
+                break
     def sprawdz_pole():
         pole = plansza_do_gry.pola[gracz.pionek.numerPola]
         typ = type(pole).__name__
@@ -260,20 +304,10 @@ def uruchom_okno_student(login):
             question_popup.pokaz_pytanie(okno, pytanie, gracz)
         zapisz_pozycje_gracza()
 
-    def sprawdz_start():
-        while True:
-            time.sleep(1)
-            if not os.path.exists("gra_status.json"):
-                continue
-            with open("gra_status.json", "r", encoding="utf-8") as f:
-                dane = json.load(f)
-            if dane["status"] == "start":
-                ladowanie_tlo.destroy()
-                plansza_do_gry.Rysuj()
-                gracz.pionek.wyswietlPionek(plansza_do_gry, gracz.pionek.kolor)
-                break
+    
 
     threading.Thread(target=sprawdz_start, daemon=True).start()
+    threading.Thread(target=sprawdz_reset, daemon=True).start()
 
     odswiez_ranking()
     odswiez_pionki()
