@@ -105,7 +105,7 @@ def uruchom_okno_student(login):
     ladowanie_tlo = tk.Canvas(okno, width=450, height=330, bg="#f3eee6")
 
     ladowanie_tlo.place(x=screen_width/2-225, y=220)
-    ladowanie_tlo.create_text(250, 50, text="Oczekiwanie aż\nprowadzący zacznie grę", fill="black", font='Inter 25'
+    ladowanie_tlo.create_text(250, 50, text="Oczekiwanie aż\nprowadzący zacznie grę", fill="black", font='Inter 25')
     gif_img_id = ladowanie_tlo.create_image(225, 165, image=gif_frames[0])  # center
 
     def animuj_gif():
