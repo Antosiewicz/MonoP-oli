@@ -27,6 +27,21 @@ def zarejestruj_gracza(login):
     except FileNotFoundError:
         dane = {"status": "oczekiwanie", "gracze": []}
 
+    # 🚫 Blokada dołączenia po starcie gry
+    if dane.get("status") == "start":
+        tk.messagebox.showerror("Błąd", "Gra już się rozpoczęła. Nie możesz dołączyć.")
+        exit()  # albo return None i obsłuż to wyżej
+
+    gracze = dane.get("gracze", [])
+    for g in gracze:
+        if g["login"] == login:
+            return g["kolor"]
+    try:
+        with open("gra_status.json", "r", encoding="utf-8") as f:
+            dane = json.load(f)
+    except FileNotFoundError:
+        dane = {"status": "oczekiwanie", "gracze": []}
+
     gracze = dane.get("gracze", [])
     for g in gracze:
         if g["login"] == login:
@@ -223,6 +238,13 @@ def uruchom_okno_student(login):
     def sprawdz_pole():
         pole = plansza_do_gry.pola[gracz.pionek.numerPola]
         typ = type(pole).__name__
+        if hasattr(pole, "akcja"):
+            pole.akcja(gracz)
+        if typ == "Stypendium":
+            gracz.ects += 2
+            zapisz_pozycje_gracza()
+            question_popup.aktualizuj_ects(gracz.login,gracz.ects)
+            tk.messagebox.showinfo("Stypendium", "+2 ECTS za stypendium!")
         if typ == "SprawdzenieWiedzy" and gracz.pytania_wiedza:
             pytanie = gracz.pytania_wiedza.pop(0)
             question_popup.pokaz_pytanie(okno, pytanie, gracz)

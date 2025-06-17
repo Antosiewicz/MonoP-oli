@@ -1,6 +1,6 @@
-from tkinter import Image
+from PIL import Image, ImageTk
+import plansza
 from pole import *
-
 
 class Stypendium(Pole):
     def __init__(self, x, y):
@@ -8,3 +8,5 @@ class Stypendium(Pole):
         self.filename = "stypendium.png"
         obraz = Image.open(self.filename).resize((plansza.POLE_X, plansza.POLE_Y))
         self.photo = ImageTk.PhotoImage(obraz)
+
+    
