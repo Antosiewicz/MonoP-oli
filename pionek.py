@@ -1,21 +1,36 @@
 from PIL import Image, ImageTk
 import tkinter as tk
+import pygame
+
+pygame.mixer.init()  # Inicjalizacja miksera pygame
+
+def dzwiek_ruch():
+    try:
+        pygame.mixer.Sound('first_move.mp3').play()
+    except Exception as e:
+        print(f"Błąd dźwięku (first_move.mp3): {e}")
+
+def dzwiek_koniec():
+    try:
+        pygame.mixer.Sound('last_move.mp3').play()
+    except Exception as e:
+        print(f"Błąd dźwięku (last_move.mp3): {e}")
 
 PIONEK_X = 25
 PIONEK_Y = 40
-LICZBA_POL=38
-pos=[[12,0],[36,0],[0,16],[24,16]]
+LICZBA_POL = 38
+pos = [[12, 0], [36, 0], [0, 16], [24, 16]]
 
 class Pionek:
-    kolor=0
+    kolor = 0
 
     def __init__(self, kolor):
         self.kolor = kolor
-        self.numerPola=0
+        self.numerPola = 0
         self.img_id = None
 
-    def wybierzKolor(self,kolorPionka):
-        self.kolor=kolorPionka
+    def wybierzKolor(self, kolorPionka):
+        self.kolor = kolorPionka
 
     def ruch(self, liczbaPol):
         poprzednie_pole = self.numerPola
@@ -35,7 +50,6 @@ class Pionek:
                 p.tlo.delete(self.img_id)
             self.img_id = None
 
-        # Bezpieczne rysowanie na właściwej pozycji
         if 0 <= slot_na_polu < len(pos):
             self.img_id = plansza.pola[pole].tlo.create_image(
                 12 + pos[slot_na_polu][0],
@@ -44,7 +58,6 @@ class Pionek:
             )
         else:
             print(f"[Błąd] Nieprawidłowy slot_na_polu={slot_na_polu} — dostępne: 0–{len(pos)-1}")
-
 
     def animowany_ruch(self, plansza, ktoryPionek, liczbaPol, callback=None):
         kroki = []
@@ -75,7 +88,3 @@ class Pionek:
             plansza.okno.after(300, wykonaj_krok)
 
         wykonaj_krok()
-
-
-
-
