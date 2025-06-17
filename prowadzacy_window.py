@@ -30,6 +30,12 @@ def uruchom_okno_prowadzacy():
     #powrot_button.image = powrot_photo
     powrot_button.place(x=50, y=30)
 
+    logo_img = Image.open("logo2.png").resize((800, 700))
+    logo_photo = ImageTk.PhotoImage(logo_img)
+    logo_label = tk.Label(okno, image=logo_photo, bg="#e2dbd8")
+    logo_label.image = logo_photo
+    logo_label.place(x=300, y=-280)
+
     edytuj_button = tk.Button(
         okno,
         text="EDYTUJ BAZĘ PYTAŃ",
