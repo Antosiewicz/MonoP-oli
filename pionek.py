@@ -44,7 +44,6 @@ class Pionek:
         if pole is None:
             pole = self.numerPola
 
-        # Usuń poprzedni obraz pionka
         if self.img_id:
             for p in plansza.pola:
                 p.tlo.delete(self.img_id)
@@ -84,6 +83,8 @@ class Pionek:
                 18 + pos[ktoryPionek][1],
                 image=plansza.pola[self.numerPola].pionek[self.kolor]
             )
+
+            dzwiek_ruch()  # Dodano tu!
 
             plansza.okno.after(300, wykonaj_krok)
 
