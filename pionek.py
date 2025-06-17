@@ -84,7 +84,10 @@ class Pionek:
                 image=plansza.pola[self.numerPola].pionek[self.kolor]
             )
 
-            dzwiek_ruch()  # Dodano tu!
+            if not kroki:
+                dzwiek_koniec()  # Ostatnie pole!
+            else:
+                dzwiek_ruch()
 
             plansza.okno.after(300, wykonaj_krok)
 
