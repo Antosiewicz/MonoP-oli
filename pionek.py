@@ -25,15 +25,26 @@ class Pionek:
             self.numerPola = self.numerPola + liczbaPol
         return poprzednie_pole
 
-    def wyswietlPionek(self, plansza, ktoryPionek, stare_pole=None):
-        if self.img_id and stare_pole is not None:
-            plansza.pola[stare_pole].tlo.delete(self.img_id)
+    def wyswietlPionek(self, plansza, slot_na_polu=0, pole=None):
+        if pole is None:
+            pole = self.numerPola
 
-        self.img_id = plansza.pola[self.numerPola].tlo.create_image(
-            12 + pos[ktoryPionek][0],
-            18 + pos[ktoryPionek][1],
-            image=plansza.pola[self.numerPola].pionek[self.kolor]
-        )
+        # Usuń poprzedni obraz pionka
+        if self.img_id:
+            for p in plansza.pola:
+                p.tlo.delete(self.img_id)
+            self.img_id = None
+
+        # Bezpieczne rysowanie na właściwej pozycji
+        if 0 <= slot_na_polu < len(pos):
+            self.img_id = plansza.pola[pole].tlo.create_image(
+                12 + pos[slot_na_polu][0],
+                18 + pos[slot_na_polu][1],
+                image=plansza.pola[pole].pionek[self.kolor]
+            )
+        else:
+            print(f"[Błąd] Nieprawidłowy slot_na_polu={slot_na_polu} — dostępne: 0–{len(pos)-1}")
+
 
     def animowany_ruch(self, plansza, ktoryPionek, liczbaPol, callback=None):
         kroki = []
