@@ -4,6 +4,7 @@ import menu
 import login_screen
 from database import zaloguj_uzytkownika
 import prowadzacy_window
+from PIL import Image, ImageTk
 
 def uruchom_logowanie_prowadzacy(prev_window):
     root = tk.Tk()
@@ -15,13 +16,26 @@ def uruchom_logowanie_prowadzacy(prev_window):
     root.geometry(f"{screen_width}x{screen_height}")
     root.configure(bg="#e2dbd8")
 
-    tk.Label(root, text="Login:").pack(pady=5)
-    login_entry = tk.Entry(root)
-    login_entry.pack()
+    # Tworzenie tła
+    tlo = tk.Canvas(root, width=screen_width, height=screen_height)
+    tlo.pack(fill="both", expand=True)
+    bg_i = Image.open("tlo_politechnika_kontury.png").resize((screen_width, screen_height))
+    bg = ImageTk.PhotoImage(bg_i)
+    tlo.create_image(0, 0, image=bg, anchor="nw")
 
-    tk.Label(root, text="Hasło:").pack(pady=5)
-    haslo_entry = tk.Entry(root, show="*")
-    haslo_entry.pack()
+    tlo1_height = 300
+    tlo1_width = 300
+    tlo1 = tk.Canvas(tlo, width=tlo1_width, height=tlo1_height, bg="#750006")
+
+    login_label = tk.Label(tlo1, text="LOGIN:", font="Georgia 16 bold", bg="#750006", fg="#d9dad9")
+    login_window = tlo1.create_window(tlo1_width / 2, 50, window=login_label)
+    login_entry = tk.Entry(tlo1)
+    login_entry_window = tlo1.create_window(tlo1_width / 2, 75, window=login_entry)
+
+    haslo_label = tk.Label(tlo1, text="HASŁO:", font="Georgia 16 bold", bg="#750006", fg="#d9dad9")
+    haslo_window = tlo1.create_window(tlo1_width / 2, 100, window=haslo_label)
+    haslo_entry = tk.Entry(tlo1, show="*")
+    haslo_window = tlo1.create_window(tlo1_width / 2, 125, window=haslo_entry)
 
     def zaloguj():
         login = login_entry.get()
@@ -33,8 +47,11 @@ def uruchom_logowanie_prowadzacy(prev_window):
         else:
             messagebox.showerror("Błąd", "Nieprawidłowy login lub hasło")
 
-    tk.Button(root, text="Zaloguj", command=zaloguj).pack(pady=10)
-    tk.Button(root, text="Powrót", command=lambda: powrot_do_menu(root)).pack(pady=10)
+    zaloguj = tk.Button(tlo1, text="ZALOGUJ", command=zaloguj, font="Georgia 14", bg="#d9dad9", fg="#750006")
+    zaloguj_window = tlo1.create_window(tlo1_width / 2, 200, window=zaloguj)
+    powrot = tk.Button(root, text="Powrót", command=lambda: powrot_do_menu(root), font="Georgia 14", bg="#d9dad9", fg="#750006")
+    powrot_window = tlo1.create_window(tlo1_width / 2, 250, window=powrot)
+    tlo1.place(x=screen_width / 2, y=screen_height / 3, anchor="c")
 
     root.bind('<Return>', lambda event: zaloguj())
 
