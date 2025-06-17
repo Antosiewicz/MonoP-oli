@@ -31,7 +31,7 @@ def uruchom_ekran_logowania():
 
     #tk.Label(tlo, text="Witaj, Studencie!", font=("Arial", 18), bg="#e2dbd8").pack(pady=20)
 
-    tk.Button(tlo, image=zaloguj_sie_photo, borderwidth=0, command=lambda: uruchom_logowanie(root)).pack(pady=10)
+    tk.Button(tlo, image=zaloguj_sie_photo, borderwidth=0, command=lambda: uruchom_logowanie(root)).pack(pady=(screen_height/5, 10))
     tk.Button(tlo, image=zaloz_konto_photo, borderwidth=0, command=lambda: uruchom_rejestracje(root)).pack(pady=10)
     tk.Button(tlo, image=powrot_photo, borderwidth=0, command=lambda: powrot_do_menu(root)).pack(pady=10)
 
