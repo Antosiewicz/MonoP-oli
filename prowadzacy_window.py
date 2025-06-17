@@ -25,20 +25,21 @@ def uruchom_okno_prowadzacy():
     okno.geometry(f"{screen_width}x{screen_height}")
     okno.configure(bg="#e2dbd8")
 
-    powrot_img = Image.open("powrot.png").resize((210, 70))
-    powrot_photo = ImageTk.PhotoImage(powrot_img)
-    powrot_button = tk.Button(okno, image=powrot_photo, command=lambda: powrot_przycisk(okno), borderwidth=0)
-    powrot_button.image = powrot_photo
+    #powrot_img = Image.open("powrot.png").resize((210, 70))
+    #powrot_photo = ImageTk.PhotoImage(powrot_img)
+    powrot_button = tk.Button(okno, text="POWRÓT", command=lambda: powrot_przycisk(okno), font="Georgia 25", fg="#d9dad9", bg="#750006")
+    #powrot_button.image = powrot_photo
     powrot_button.place(x=50, y=30)
 
     edytuj_button = tk.Button(
         okno,
-        text="Edytuj bazę pytań",
+        text="EDYTUJ BAZĘ PYTAŃ",
         command=lambda: [okno.destroy(), question_editor.uruchom_edycje()],
-        bg="#660000",
-        fg="white",
-        width=20,
-        height=2
+        bg="#750006",
+        fg="#d9dad9",
+        font=('Georgia', 16),
+        #width=20,
+        #height=2
     )
     edytuj_button.place(x=700, y=400)
 
@@ -56,13 +57,13 @@ def uruchom_okno_prowadzacy():
         with open("gra_status.json", "w", encoding="utf-8") as f:
             json.dump(dane, f, indent=2)
 
-    tk.Button(okno, text="Start gry", command=start_gra).place(x=750, y=300)
+    tk.Button(okno, text="START GRY", command=start_gra, fg="#d9dad9", bg="#750006", font=('Georgia', 16)).place(x=700, y=300)
 
     def reset_gra():
         with open("gra_status.json", "w", encoding="utf-8") as f:
             json.dump({"status": "oczekiwanie", "gracze": []}, f)
 
-    tk.Button(okno, text="Reset gry", command=reset_gra).place(x=750, y=350)
+    tk.Button(okno, text="RESET GRY", command=reset_gra, fg="#d9dad9", bg="#750006", font=('Georgia', 16)).place(x=700, y=350)
 
     def on_closing():
         with open("gra_status.json", "w", encoding="utf-8") as f:
@@ -73,7 +74,7 @@ def uruchom_okno_prowadzacy():
 
     ranking_header = tk.Canvas(okno, width=227, height=50, bg="#750006", highlightthickness=0)
     ranking_header.place(x=50, y=200)
-    ranking_header.create_text(113, 25, text="RANKING:", fill="white", font=('Inter', 20, 'bold'))
+    ranking_header.create_text(113, 25, text="RANKING:", fill="#d9dad9", font=('Georgia', 20, 'bold'))
 
     ranking_canvas = tk.Canvas(okno, width=227, height=450, bg="#750006", highlightthickness=0)
     ranking_canvas.place(x=50, y=250)
