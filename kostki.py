@@ -7,7 +7,7 @@ pygame.mixer.init()
 
 def odtworz_dzwiek():
     try:
-        pygame.mixer.Sound('rolling_dice.wav').play()
+        pygame.mixer.Sound('rolling_dice.mp3').play()
     except Exception as e:
         print(f"Błąd dźwięku: {e}")
 
