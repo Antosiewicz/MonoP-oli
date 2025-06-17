@@ -7,7 +7,6 @@ import os
 from plansza import Plansza
 from pionek import Pionek, pos
 
-
 def powrot_przycisk(okno):
     okno.destroy()
     menu.main()
@@ -25,22 +24,29 @@ def uruchom_okno_prowadzacy():
     okno.geometry(f"{screen_width}x{screen_height}")
     okno.configure(bg="#e2dbd8")
 
-    powrot_img = Image.open("powrot.png").resize((210, 70))
-    powrot_photo = ImageTk.PhotoImage(powrot_img)
-    powrot_button = tk.Button(okno, image=powrot_photo, command=lambda: powrot_przycisk(okno), borderwidth=0)
-    powrot_button.image = powrot_photo
+    #powrot_img = Image.open("powrot.png").resize((210, 70))
+    #powrot_photo = ImageTk.PhotoImage(powrot_img)
+    powrot_button = tk.Button(okno, text="POWRÓT", command=lambda: powrot_przycisk(okno), font="Georgia 25", fg="#d9dad9", bg="#750006")
+    #powrot_button.image = powrot_photo
     powrot_button.place(x=50, y=30)
+
+    logo_img = Image.open("logo2.png").resize((800, 700))
+    logo_photo = ImageTk.PhotoImage(logo_img)
+    logo_label = tk.Label(okno, image=logo_photo, bg="#e2dbd8")
+    logo_label.image = logo_photo
+    logo_label.place(x=300, y=-280)
 
     edytuj_button = tk.Button(
         okno,
-        text="Edytuj bazę pytań",
+        text="EDYTUJ BAZĘ PYTAŃ",
         command=lambda: [okno.destroy(), question_editor.uruchom_edycje()],
-        bg="#660000",
-        fg="white",
+        bg="#750006",
+        fg="#d9dad9",
+        font='Georgia',
         width=20,
-        height=2
+        height=1
     )
-    edytuj_button.place(x=700, y=400)
+    edytuj_button.place(x=screen_width/2-120, y=400)
 
     def start_gra():
         try:
@@ -56,13 +62,13 @@ def uruchom_okno_prowadzacy():
         with open("gra_status.json", "w", encoding="utf-8") as f:
             json.dump(dane, f, indent=2)
 
-    tk.Button(okno, text="Start gry", command=start_gra).place(x=750, y=300)
+    tk.Button(okno, text="START GRY", command=start_gra, fg="#d9dad9", bg="#750006", font='Georgia', width=20, height=1).place(x=screen_width/2-120, y=300)
 
     def reset_gra():
         with open("gra_status.json", "w", encoding="utf-8") as f:
             json.dump({"status": "oczekiwanie", "gracze": []}, f)
 
-    tk.Button(okno, text="Reset gry", command=reset_gra).place(x=750, y=350)
+    tk.Button(okno, text="RESET GRY", command=reset_gra, fg="#d9dad9", bg="#750006", font='Georgia', width=20, height=1).place(x=screen_width/2-120, y=350)
 
     def on_closing():
         with open("gra_status.json", "w", encoding="utf-8") as f:
@@ -73,7 +79,7 @@ def uruchom_okno_prowadzacy():
 
     ranking_header = tk.Canvas(okno, width=227, height=50, bg="#750006", highlightthickness=0)
     ranking_header.place(x=50, y=200)
-    ranking_header.create_text(113, 25, text="RANKING:", fill="white", font=('Inter', 20, 'bold'))
+    ranking_header.create_text(113, 25, text="RANKING:", fill="#d9dad9", font=('Georgia', 20, 'bold'))
 
     ranking_canvas = tk.Canvas(okno, width=227, height=450, bg="#750006", highlightthickness=0)
     ranking_canvas.place(x=50, y=250)
@@ -95,8 +101,14 @@ def uruchom_okno_prowadzacy():
             print(f"[Błąd odświeżania rankingu]: {e}")
 
         okno.after(1000, odswiez_ranking)
+    pole_x = int(screen_width/15)
+    pole_y=int(screen_height/14)
+    dl_planszy=11
+    szer_planszy=8
+    margin_left=screen_width/2-(szer_planszy/2+1)*pole_x
+    margin_top = screen_height / 2 - (dl_planszy / 2) * pole_y
 
-    plansza_do_gry = Plansza(okno, 11, 8, 100, 400, 70, 50)
+    plansza_do_gry = Plansza(okno, dl_planszy, szer_planszy, margin_top, margin_left, pole_x, pole_y)
     plansza_do_gry.WypelnijDomyslnie()
     plansza_do_gry.Rysuj()
 

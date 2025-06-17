@@ -6,12 +6,14 @@ from pionek import PIONEK_X,PIONEK_Y
 
 
 class Pole:
-    def __init__(self, x, y):
+    def __init__(self, x, y, pole_x, pole_y):
         self.x = x
         self.y = y
+        self.pole_x=pole_x
+        self.pole_y=pole_y
         self.filename = "logo.png"
         self.wlasciwosc = None
-        obraz = Image.open(self.filename).resize((plansza.POLE_X, plansza.POLE_Y))
+        obraz = Image.open(self.filename).resize((self.pole_x, self.pole_y))
         self.photo = ImageTk.PhotoImage(obraz)
         self.tlo = None
         self.pionek=[]
