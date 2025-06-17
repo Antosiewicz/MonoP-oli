@@ -1,2 +1,16 @@
-{"status": "oczekiwanie", "gracze": []}
-
+{
+  "status": "oczekiwanie",
+  "gracze": [
+    {
+      "login": "Szymon",
+      "ects": 0,
+      "kolor": 0,
+      "pole": 0,
+      "ksztalt": 2
+    }
+  ],
+  "tura": 3,
+  "ruchy": {
+    "Szymon": 2
+  }
+}

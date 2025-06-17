@@ -40,10 +40,13 @@ def uruchom_logowanie(prev_window):
     def zaloguj():
         login = login_entry.get()
         haslo = haslo_entry.get()
+        import wybor_pionka
+
         if zaloguj_uzytkownika(login, haslo, rola="student"):
             messagebox.showinfo("Sukces", "Zalogowano pomyślnie!")
             root.destroy()
-            student_window.uruchom_okno_student(login)
+            kolor = student_window.zarejestruj_gracza(login)  # Już masz tę funkcję!
+            wybor_pionka.wybierz_pionek_window(login, kolor)
         else:
             messagebox.showerror("Błąd", "Nieprawidłowy login lub hasło")
 
