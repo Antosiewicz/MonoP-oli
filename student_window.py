@@ -98,12 +98,21 @@ def uruchom_okno_student(login):
     gif = Image.open("loading.gif")
     gif_frames = [ImageTk.PhotoImage(frame.copy().convert("RGBA")) for frame in ImageSequence.Iterator(gif)]
     gif_index = 0
+    ladowanie_width = 450
+    ladowanie_height = 330
+    ladowanie_x = (screen_width - ladowanie_width) // 2
+    ladowanie_y = (screen_height - ladowanie_height) // 2
 
-    ladowanie_tlo = tk.Canvas(okno, width=450, height=330, bg="#f3eee6")
-    ladowanie_tlo.place(x=screen_width/2-225, y=220)
-    ladowanie_tlo.create_text(250, 50, text="Oczekiwanie aż\nprowadzący zacznie grę", fill="black", font='Inter 25')
-    gif_img_id = ladowanie_tlo.create_image(225, 165, image=gif_frames[0])
-
+    ladowanie_tlo = tk.Canvas(okno, width=ladowanie_width, height=ladowanie_height, bg="#f3eee6", highlightthickness=0)
+    ladowanie_tlo.place(x=ladowanie_x, y=ladowanie_y)
+    ladowanie_tlo.create_text(
+        ladowanie_width // 2, 80,
+        text="Oczekiwanie aż\nprowadzący zacznie grę",
+        fill="black",
+        font='Inter 25',
+        justify="center"
+    )
+    gif_img_id = ladowanie_tlo.create_image(ladowanie_width // 2, ladowanie_height // 2 + 40, image=gif_frames[0])
     def animuj_gif():
         nonlocal gif_index
         gif_index = (gif_index + 1) % len(gif_frames)
