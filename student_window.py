@@ -27,7 +27,7 @@ def zarejestruj_gracza(login):
     except FileNotFoundError:
         dane = {"status": "oczekiwanie", "gracze": []}
 
-    # 🚫 Blokada dołączenia po starcie gry
+    #  Blokada dołączenia po starcie gry
     if dane.get("status") == "start":
         tk.messagebox.showerror("Błąd", "Gra już się rozpoczęła. Nie możesz dołączyć.")
         exit()
@@ -94,16 +94,25 @@ def uruchom_okno_student(login):
     logo_photo = ImageTk.PhotoImage(logo_img)
     logo_label = tk.Label(okno, image=logo_photo, bg="#e2dbd8")
     logo_label.image = logo_photo
-    logo_label.place(x=300, y=-280)
+    logo_label.place(x=screen_width/2-400, y=-280)
     gif = Image.open("loading.gif")
     gif_frames = [ImageTk.PhotoImage(frame.copy().convert("RGBA")) for frame in ImageSequence.Iterator(gif)]
     gif_index = 0
+    ladowanie_width = 450
+    ladowanie_height = 330
+    ladowanie_x = (screen_width - ladowanie_width) // 2
+    ladowanie_y = (screen_height - ladowanie_height) // 2
 
-    ladowanie_tlo = tk.Canvas(okno, width=450, height=330, bg="#f3eee6")
-    ladowanie_tlo.place(x=screen_width/2-225, y=220)
-    ladowanie_tlo.create_text(250, 50, text="Oczekiwanie aż\nprowadzący zacznie grę", fill="black", font='Inter 25')
-    gif_img_id = ladowanie_tlo.create_image(225, 165, image=gif_frames[0])
-
+    ladowanie_tlo = tk.Canvas(okno, width=ladowanie_width, height=ladowanie_height, bg="#f3eee6", highlightthickness=0)
+    ladowanie_tlo.place(x=ladowanie_x, y=ladowanie_y)
+    ladowanie_tlo.create_text(
+        ladowanie_width // 2, 80,
+        text="Oczekiwanie aż\nprowadzący zacznie grę",
+        fill="black",
+        font='Inter 25',
+        justify="center"
+    )
+    gif_img_id = ladowanie_tlo.create_image(ladowanie_width // 2, ladowanie_height // 2 + 40, image=gif_frames[0])
     def animuj_gif():
         nonlocal gif_index
         gif_index = (gif_index + 1) % len(gif_frames)
@@ -111,7 +120,28 @@ def uruchom_okno_student(login):
         okno.after(25, animuj_gif)
 
     animuj_gif()
+    def pokaz_okno_pomocy():
+        opis = (
+            "📘 Zasady gry:\n"
+            "- Każdy gracz rzuca kostką i porusza się o sumę oczek.\n"
+            "- Po ruchu wywoływana jest akcja pola:\n"
+            "  🧪 Sprawdzenie Wiedzy – quiz z bonusem.\n"
+            "  🎓 Sesja Egzaminacyjna – trudniejsze pytanie, więcej punktów.\n"
+            "  🟡 Stypendium – +2 ECTS bez pytania.\n"
+            "  🚫 Nieobecność – tura przepada.\n\n"
+            "📌 Nowa tura rozpoczyna się dopiero, gdy KAŻDY gracz zakończy swoją."
+        )
+        tk.messagebox.showinfo("Pomoc – Zasady Gry", opis)
 
+    pomoc_button = tk.Button(
+        okno,
+        text="POMOC",
+        command=pokaz_okno_pomocy,
+        font="Georgia 25",
+        fg="#d9dad9",
+        bg="#750006"
+    )
+    pomoc_button.place(x=screen_width - 250, y=30)  #  Umieszczenie po prawej
     ranking_header = tk.Canvas(okno, width=227, height=50, bg="#750006", highlightthickness=0)
     ranking_header.place(x=50, y=200)
     ranking_header.create_text(113, 25, text="RANKING:", fill="#d9dad9", font=('Georgia', 20, 'bold'))
@@ -266,7 +296,7 @@ def uruchom_okno_student(login):
             if status == "start":
                 gra_rozpoczeta = True
             if gra_rozpoczeta and status == "oczekiwanie":
-                tk.messagebox.showinfo("Reset gry", f"Gra została zresetowana.\nZdobyte ECTS: {gracz.ects}")
+                tk.messagebox.showinfo("Reset gry", f"Gra zakoniczyła sie.\nZdobyte ECTS: {gracz.ects}")
                 okno.destroy()
                 break
 

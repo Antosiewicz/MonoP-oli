@@ -34,7 +34,7 @@ def uruchom_okno_prowadzacy():
     logo_photo = ImageTk.PhotoImage(logo_img)
     logo_label = tk.Label(okno, image=logo_photo, bg="#e2dbd8")
     logo_label.image = logo_photo
-    logo_label.place(x=300, y=-280)
+    logo_label.place(x=screen_width/2-400, y=-280)
 
     edytuj_button = tk.Button(
         okno,
@@ -61,12 +61,20 @@ def uruchom_okno_prowadzacy():
 
         with open("gra_status.json", "w", encoding="utf-8") as f:
             json.dump(dane, f, indent=2)
+            
 
     tk.Button(okno, text="START GRY", command=start_gra, fg="#d9dad9", bg="#750006", font='Georgia', width=20, height=1).place(x=screen_width/2-120, y=300)
 
     def reset_gra():
         with open("gra_status.json", "w", encoding="utf-8") as f:
             json.dump({"status": "oczekiwanie", "gracze": []}, f)
+        for pionek in pionki_graczy.values():
+            if pionek.img_id and pionek.numerPola is not None:
+                try:
+                    plansza_do_gry.pola[pionek.numerPola].tlo.delete(pionek.img_id)
+                except:
+                    pass
+        pionki_graczy.clear()
 
     tk.Button(okno, text="RESET GRY", command=reset_gra, fg="#d9dad9", bg="#750006", font='Georgia', width=20, height=1).place(x=screen_width/2-120, y=350)
 
