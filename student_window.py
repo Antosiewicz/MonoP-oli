@@ -27,7 +27,7 @@ def zarejestruj_gracza(login):
     except FileNotFoundError:
         dane = {"status": "oczekiwanie", "gracze": []}
 
-    # 🚫 Blokada dołączenia po starcie gry
+    #  Blokada dołączenia po starcie gry
     if dane.get("status") == "start":
         tk.messagebox.showerror("Błąd", "Gra już się rozpoczęła. Nie możesz dołączyć.")
         exit()
@@ -111,7 +111,28 @@ def uruchom_okno_student(login):
         okno.after(25, animuj_gif)
 
     animuj_gif()
+    def pokaz_okno_pomocy():
+        opis = (
+            "📘 Zasady gry:\n"
+            "- Każdy gracz rzuca kostką i porusza się o sumę oczek.\n"
+            "- Po ruchu wywoływana jest akcja pola:\n"
+            "  🧪 Sprawdzenie Wiedzy – quiz z bonusem.\n"
+            "  🎓 Sesja Egzaminacyjna – trudniejsze pytanie, więcej punktów.\n"
+            "  🟡 Stypendium – +2 ECTS bez pytania.\n"
+            "  🚫 Nieobecność – tura przepada.\n\n"
+            "📌 Nowa tura rozpoczyna się dopiero, gdy KAŻDY gracz zakończy swoją."
+        )
+        tk.messagebox.showinfo("Pomoc – Zasady Gry", opis)
 
+    pomoc_button = tk.Button(
+        okno,
+        text="POMOC",
+        command=pokaz_okno_pomocy,
+        font="Georgia 25",
+        fg="#d9dad9",
+        bg="#750006"
+    )
+    pomoc_button.place(x=screen_width - 250, y=30)  #  Umieszczenie po prawej
     ranking_header = tk.Canvas(okno, width=227, height=50, bg="#750006", highlightthickness=0)
     ranking_header.place(x=50, y=200)
     ranking_header.create_text(113, 25, text="RANKING:", fill="#d9dad9", font=('Georgia', 20, 'bold'))
@@ -266,7 +287,7 @@ def uruchom_okno_student(login):
             if status == "start":
                 gra_rozpoczeta = True
             if gra_rozpoczeta and status == "oczekiwanie":
-                tk.messagebox.showinfo("Reset gry", f"Gra została zresetowana.\nZdobyte ECTS: {gracz.ects}")
+                tk.messagebox.showinfo("Reset gry", f"Gra zakoniczyła sie.\nZdobyte ECTS: {gracz.ects}")
                 okno.destroy()
                 break
 
