@@ -1,4 +1,4 @@
-from PIL import Image, ImageTk,ImageSequence
+from PIL import Image, ImageTk, ImageSequence
 import tkinter as tk
 import menu
 import json
@@ -10,7 +10,7 @@ from plansza import *
 from student import Student
 from kostki import zaladuj_grafiki_kostek, stworz_labelki_kostek, dodaj_przycisk_rzutu
 import question_popup
-from pionek import Pionek,pos  # dodane by uniknac NameError
+from pionek import Pionek, pos
 
 def zakoncz_gre(okno, gracz):
     tk.messagebox.showinfo("Koniec gry", f"Koniec pytań!\nZdobyte ECTS: {gracz.ects}")
@@ -30,17 +30,7 @@ def zarejestruj_gracza(login):
     #  Blokada dołączenia po starcie gry
     if dane.get("status") == "start":
         tk.messagebox.showerror("Błąd", "Gra już się rozpoczęła. Nie możesz dołączyć.")
-        exit()  # albo return None i obsłuż to wyżej
-
-    gracze = dane.get("gracze", [])
-    for g in gracze:
-        if g["login"] == login:
-            return g["kolor"]
-    try:
-        with open("gra_status.json", "r", encoding="utf-8") as f:
-            dane = json.load(f)
-    except FileNotFoundError:
-        dane = {"status": "oczekiwanie", "gracze": []}
+        exit()
 
     gracze = dane.get("gracze", [])
     for g in gracze:
@@ -63,30 +53,37 @@ def zarejestruj_gracza(login):
 
 def uruchom_okno_student(login):
     okno = tk.Tk()
-    
-    kolor = zarejestruj_gracza(login)
-    gracz = Student(login, kolor)
 
+    # Pobierz kolor i KSZTALT gracza
     try:
         with open("gra_status.json", "r", encoding="utf-8") as f:
             dane = json.load(f)
         for g in dane["gracze"]:
             if g["login"] == login:
-                gracz.pionek.numerPola = g.get("pole", 0)
+                kolor = g["kolor"]
+                ksztalt = g.get("ksztalt", 0)  # domyślnie 0
+                pole_start = g.get("pole", 0)
                 break
+        else:
+            # fallback
+            kolor = zarejestruj_gracza(login)
+            ksztalt = 0
+            pole_start = 0
     except:
-        pass
+        kolor = zarejestruj_gracza(login)
+        ksztalt = 0
+        pole_start = 0
+
+    gracz = Student(login, kolor, ksztalt)
+    gracz.pionek.numerPola = pole_start
 
     okno.title("Okno Studenta")
     screen_width = okno.winfo_screenwidth()
     screen_height = okno.winfo_screenheight()
     okno.geometry(f"{screen_width}x{screen_height}")
     okno.configure(bg="#e2dbd8")
-    
-    #powrot_img = Image.open("powrot.png").resize((210, 70))
-    #powrot_photo = ImageTk.PhotoImage(powrot_img)
+
     powrot_button = tk.Button(okno, text="POWRÓT", command=lambda: powrot_przycisk(okno), font="Georgia 25", fg="#d9dad9", bg="#750006")
-    #powrot_button.image = powrot_photo
     powrot_button.place(x=50, y=30)
 
     ectsy_tlo = tk.Canvas(okno, width=210, height=70, bg="#750006")
@@ -97,7 +94,7 @@ def uruchom_okno_student(login):
     logo_photo = ImageTk.PhotoImage(logo_img)
     logo_label = tk.Label(okno, image=logo_photo, bg="#e2dbd8")
     logo_label.image = logo_photo
-    logo_label.place(x=300, y=-280)
+    logo_label.place(x=screen_width/2-400, y=-280)
     gif = Image.open("loading.gif")
     gif_frames = [ImageTk.PhotoImage(frame.copy().convert("RGBA")) for frame in ImageSequence.Iterator(gif)]
     gif_index = 0
@@ -116,7 +113,6 @@ def uruchom_okno_student(login):
         justify="center"
     )
     gif_img_id = ladowanie_tlo.create_image(ladowanie_width // 2, ladowanie_height // 2 + 40, image=gif_frames[0])
-
     def animuj_gif():
         nonlocal gif_index
         gif_index = (gif_index + 1) % len(gif_frames)
@@ -174,7 +170,7 @@ def uruchom_okno_student(login):
         except:
             pass
         okno.after(1000, odswiez_ranking)
-    
+
     pionki_innych = {}
 
     def odswiez_pionki():
@@ -184,14 +180,15 @@ def uruchom_okno_student(login):
 
             for g in dane["gracze"]:
                 if g["login"] == gracz.login:
-                    continue
+                    continue  # nie rysuj swojego drugi raz
 
                 login = g["login"]
                 kolor = g.get("kolor", 0)
                 pole = g.get("pole", 0)
+                ksztalt = g.get("ksztalt", 0)  # <<< TO JEST KLUCZOWE
 
                 if login not in pionki_innych:
-                    pionek_tmp = Pionek(kolor)
+                    pionek_tmp = Pionek(kolor, ksztalt)
                     pionek_tmp.numerPola = pole
                     pionki_innych[login] = pionek_tmp
                 else:
@@ -200,11 +197,16 @@ def uruchom_okno_student(login):
                     if pionek_tmp.img_id is not None:
                         plansza_do_gry.pola[stare_pole].tlo.delete(pionek_tmp.img_id)
                     pionek_tmp.numerPola = pole
+                    # >>> Zaktualizuj kształt i kolor!
+                    pionek_tmp.kolor = kolor
+                    pionek_tmp.ksztalt = ksztalt
 
+                # RYSUJ POPRAWNĄ GRAFIKĘ:
+                img = pionek_tmp.get_image(plansza_do_gry.pola[pole].tlo)
                 pionek_tmp.img_id = plansza_do_gry.pola[pole].tlo.create_image(
                     12 + pos[kolor][0],
                     18 + pos[kolor][1],
-                    image=plansza_do_gry.pola[pole].pionek[kolor]
+                    image=img
                 )
         except Exception as e:
             print(f"[Błąd odświeżania pionków]: {e}")
@@ -221,6 +223,7 @@ def uruchom_okno_student(login):
     plansza_do_gry = Plansza(okno, dl_planszy, szer_planszy, margin_top, margin_left, pole_x, pole_y)
     plansza_do_gry.WypelnijDomyslnie()
     plansza_do_gry.Rysuj()
+
     def sprawdz_start():
         while True:
             time.sleep(1)
@@ -232,26 +235,22 @@ def uruchom_okno_student(login):
                 ladowanie_tlo.destroy()
                 plansza_do_gry.Rysuj()
                 gracz.pionek.wyswietlPionek(plansza_do_gry, gracz.pionek.kolor)
-
-                # 👉 dodaj kostki i przycisk dopiero teraz
                 grafiki_kostek = zaladuj_grafiki_kostek()
                 label1, label2 = stworz_labelki_kostek(okno, grafiki_kostek)
                 dodaj_przycisk_rzutu(okno, label1, label2, grafiki_kostek, po_rzucie)
-
                 break
+
     gracz.pionek.wyswietlPionek(plansza_do_gry, gracz.pionek.kolor)
+
     def czy_moze_rzucic(gracz):
         try:
             with open("gra_status.json", "r", encoding="utf-8") as f:
                 dane = json.load(f)
-
             tura = dane.get("tura", 1)
             ruchy = dane.get("ruchy", {})
-
             return ruchy.get(gracz.login, 0) < tura
         except:
             return False
-    
 
     def po_rzucie(w1, w2):
         if not czy_moze_rzucic(gracz):
@@ -264,41 +263,27 @@ def uruchom_okno_student(login):
         try:
             with open("gra_status.json", "r", encoding="utf-8") as f:
                 dane = json.load(f)
-
-            # Zapewnij istnienie "tura" i "ruchy"
             if "tura" not in dane:
                 dane["tura"] = 1
             if "ruchy" not in dane:
                 dane["ruchy"] = {}
-
-            # Zwiększ licznik ruchu tego gracza
             dane["ruchy"][gracz.login] = dane["ruchy"].get(gracz.login, 0) + 1
-
-            # Jeśli wszyscy gracze mają ruchy >= obecnej tury -> nowa tura
             if all(r >= dane["tura"] for r in dane["ruchy"].values()):
                 dane["tura"] += 1
-
             with open("gra_status.json", "w", encoding="utf-8") as f:
                 json.dump(dane, f, indent=2)
-
         except Exception as e:
             print(f"[Błąd aktualizacji tury]: {e}")
 
-
-
-    # Zaktualizuj liczbę ruchów
     with open("gra_status.json", "r", encoding="utf-8") as f:
         dane = json.load(f)
-
     dane.setdefault("ruchy", {})
     dane["ruchy"][gracz.login] = dane["ruchy"].get(gracz.login, 0) + 1
-
-    # Jeśli wszyscy wykonali ruch, zwiększ turę
     if all(r >= dane["tura"] for r in dane["ruchy"].values()):
         dane["tura"] += 1
-
     with open("gra_status.json", "w", encoding="utf-8") as f:
         json.dump(dane, f, indent=2)
+
     def sprawdz_reset():
         gra_rozpoczeta = False
         while True:
@@ -307,15 +292,14 @@ def uruchom_okno_student(login):
                 continue
             with open("gra_status.json", "r", encoding="utf-8") as f:
                 dane = json.load(f)
-
             status = dane.get("status", "")
             if status == "start":
                 gra_rozpoczeta = True
-
             if gra_rozpoczeta and status == "oczekiwanie":
                 tk.messagebox.showinfo("Reset gry", f"Gra zakoniczyła sie.\nZdobyte ECTS: {gracz.ects}")
                 okno.destroy()
                 break
+
     def sprawdz_pole():
         pole = plansza_do_gry.pola[gracz.pionek.numerPola]
         typ = type(pole).__name__
@@ -334,12 +318,8 @@ def uruchom_okno_student(login):
             question_popup.pokaz_pytanie(okno, pytanie, gracz)
         zapisz_pozycje_gracza()
 
-    
-
     threading.Thread(target=sprawdz_start, daemon=True).start()
     threading.Thread(target=sprawdz_reset, daemon=True).start()
-
     odswiez_ranking()
     odswiez_pionki()
-
     okno.mainloop()
