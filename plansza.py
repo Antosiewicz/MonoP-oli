@@ -35,7 +35,8 @@ class Plansza:
         for p in self.pola:
             p.tlo = tk.Canvas(self.okno, width=self.pole_x, height=self.pole_y, bg="#e2dbd8", highlightthickness=0, bd=0)
             p.tlo.place(x=p.x, y=p.y)
-            p.tlo.create_image(self.pole_x/2+2,self.pole_y/2+1,image=p.photo)
+            # Tu bez przesunięć!
+            p.tlo.create_image(self.pole_x / 2, self.pole_y / 2, image=p.photo)
 
     def WypelnijDomyslnie(self):
         for i in range(0, len(self.pola)):
