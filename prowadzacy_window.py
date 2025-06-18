@@ -130,10 +130,11 @@ def uruchom_okno_prowadzacy():
             for g in dane.get("gracze", []):
                 login = g["login"]
                 kolor = g["kolor"]
+                ksztalt = g.get("ksztalt", 0)  # domyślnie 0
                 pole = g.get("pole", 0)
 
                 if login not in pionki_graczy:
-                    pionek = Pionek(kolor)
+                    pionek = Pionek(kolor, ksztalt)
                     pionek.numerPola = pole
                     pionki_graczy[login] = pionek
                 else:
@@ -142,11 +143,15 @@ def uruchom_okno_prowadzacy():
                     if pionek.img_id is not None:
                         plansza_do_gry.pola[stare_pole].tlo.delete(pionek.img_id)
                     pionek.numerPola = pole
+                    pionek.kolor = kolor
+                    pionek.ksztalt = ksztalt
 
+                # Prawidłowe wyświetlenie wybranego pionka
+                img = pionek.get_image(plansza_do_gry.pola[pole].tlo)
                 pionek.img_id = plansza_do_gry.pola[pole].tlo.create_image(
                     12 + pos[kolor][0],
                     18 + pos[kolor][1],
-                    image=plansza_do_gry.pola[pole].pionek[kolor]
+                    image=img
                 )
         except Exception as e:
             print(f"[Błąd odświeżania pionków]: {e}")
