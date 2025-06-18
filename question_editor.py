@@ -37,7 +37,7 @@ def uruchom_edycje():
         edytor,
         columns=('Treść', 'Typ', 'Odpowiedzi', 'Poprawna'),
         show='headings',
-        height=40  # <-- liczba widocznych wierszy w pionie
+        height=25  # <-- liczba widocznych wierszy w pionie
     )
     tree.heading('Treść', text='Treść pytania')
     tree.heading('Typ', text='Typ')
@@ -164,11 +164,11 @@ def uruchom_edycje():
             questions[:] = [q for q in questions if q['text'] != values[0]]
 
     # Przyciski funkcyjne
-    tk.Button(edytor, text="Dodaj Pytanie", command=add_question).pack(pady=5)
-    tk.Button(edytor, text="Zapisz do pliku", command=save_to_file).pack(pady=5)
-    tk.Button(edytor, text="Wczytaj z pliku", command=load_from_file).pack(pady=5)
-    tk.Button(edytor, text="Usuń zaznaczone pytanie", command=delete_selected).pack(pady=5)
-    tk.Button(edytor, text="Powrót", command=lambda: [edytor.destroy(), prowadzacy_window.uruchom_okno_prowadzacy()]).pack(pady=10)
+    tk.Button(edytor, text="Dodaj Pytanie", command=add_question, fg="#d9dad9", bg="#750006", font='Georgia', width=20, height=1).pack(pady=5)
+    tk.Button(edytor, text="Zapisz do pliku", command=save_to_file, fg="#d9dad9", bg="#750006", font='Georgia', width=20, height=1).pack(pady=5)
+    tk.Button(edytor, text="Wczytaj z pliku", command=load_from_file, fg="#d9dad9", bg="#750006", font='Georgia', width=20, height=1).pack(pady=5)
+    tk.Button(edytor, text="Usuń zaznaczone pytanie", command=delete_selected, fg="#d9dad9", bg="#750006", font='Georgia', width=20, height=1).pack(pady=5)
+    tk.Button(edytor, text="Powrót", command=lambda: [edytor.destroy(), prowadzacy_window.uruchom_okno_prowadzacy()], fg="#d9dad9", bg="#750006", font='Georgia', width=20, height=1).pack(pady=10)
 
     # Automatyczne wczytanie pytań przy starcie
     load_from_file()
