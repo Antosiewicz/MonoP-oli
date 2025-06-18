@@ -61,7 +61,7 @@ def uruchom_rejestracje(prev_window):
     haslo2_window = tlo1.create_window(tlo1_width / 2, 275, window=zarejestruj_button)
     powrot = tk.Button(tlo1, text="POWRÓT", command=lambda: powrot_do_ekranu_wyboru(root), font="Georgia 14", bg="#d9dad9", fg="#750006")
     haslo2_window = tlo1.create_window(tlo1_width / 2, 325, window=powrot)
-    tlo1.place(x=screen_width / 2, y=screen_height / 3, anchor="c")
+    tlo1.place(x=screen_width / 2, y=screen_height / 2.5, anchor="c")
     root.bind('<Return>', lambda event: zarejestruj())
 
     root.mainloop()

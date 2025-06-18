@@ -54,7 +54,7 @@ def uruchom_logowanie(prev_window):
     zaloguj_window = tlo1.create_window(tlo1_width/2, 200, window=zaloguj_button)
     powrot = tk.Button(tlo1, text="POWRÓT", command=lambda: powrot_do_ekranu_wyboru(root), font="Georgia 14", bg="#d9dad9", fg="#750006")#.pack(pady=10)
     powrot_window = tlo1.create_window(tlo1_width / 2, 250, window=powrot)
-    tlo1.place(x=screen_width / 2, y=screen_height /3, anchor="c")
+    tlo1.place(x=screen_width / 2, y=screen_height / 2.5, anchor="c")
     root.bind('<Return>', lambda event: zaloguj())
 
     root.mainloop()

@@ -40,18 +40,18 @@ def main():
     tlo.create_image(0, 0, image=bg, anchor="nw")
 
     #logo
-    tlo.create_image(screen_width/2, 300, image=logo_photo)
+    tlo.create_image(screen_width/2.02, 300, image=logo_photo)
 
 
     # Przycisk STUDENT
     student_button = tk.Button(tlo, image=student_photo, command=lambda: student_przycisk(root), borderwidth=0)
     student_button.image = student_photo
-    student_button_window = tlo.create_window(screen_width/2, 400, window=student_button)
+    student_button_window = tlo.create_window(screen_width/2, 500, window=student_button)
 
     # Przycisk PROWADZĄCY
     prowadzacy_button = tk.Button(tlo, image=prowadzacy_photo, command=lambda: prowadzacy_przycisk(root), borderwidth=0)
     prowadzacy_button.image = prowadzacy_photo
-    prowadzacy_button_window = tlo.create_window(screen_width/2, 530, window=prowadzacy_button)
+    prowadzacy_button_window = tlo.create_window(screen_width/2, 630, window=prowadzacy_button)
 
     root.mainloop()
 

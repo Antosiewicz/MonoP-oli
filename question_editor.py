@@ -7,6 +7,19 @@ import prowadzacy_window
 # Ścieżka do domyślnego pliku bazy danych
 SCIEZKA_PLIKU_JSON = "baza_pytan.json"
 
+def set_placeholder(entry, placeholder_text):
+    entry.insert(0, placeholder_text)
+    entry.config(fg='grey')
+    def on_focus_in(event):
+        if entry.get() == placeholder_text:
+            entry.delete(0, tk.END)
+            entry.config(fg='black')
+    def on_focus_out(event):
+        if entry.get() == '':
+            entry.insert(0, placeholder_text)
+            entry.config(fg='grey')
+    entry.bind('<FocusIn>', on_focus_in)
+    entry.bind('<FocusOut>', on_focus_out)
 def uruchom_edycje():
     edytor = tk.Tk()
     edytor.title("Edycja Bazy Pytań")
@@ -20,28 +33,42 @@ def uruchom_edycje():
     questions = []  # Lista przechowująca pytania jako słowniki
 
     # Tabela do wyświetlania pytań
-    tree = ttk.Treeview(edytor, columns=('Treść', 'Typ', 'Odpowiedzi', 'Poprawna'), show='headings')
+    tree = ttk.Treeview(
+        edytor,
+        columns=('Treść', 'Typ', 'Odpowiedzi', 'Poprawna'),
+        show='headings',
+        height=40  # <-- liczba widocznych wierszy w pionie
+    )
     tree.heading('Treść', text='Treść pytania')
     tree.heading('Typ', text='Typ')
     tree.heading('Odpowiedzi', text='Odpowiedzi')
     tree.heading('Poprawna', text='Poprawna odpowiedź')
-    tree.pack(fill=tk.BOTH, expand=True, pady=10)
+
+    scrollbar = ttk.Scrollbar(edytor, orient="vertical", command=tree.yview)
+    tree.configure(yscroll=scrollbar.set)
+
+    # Tylko fill=tk.X! NIE używaj fill=tk.BOTH ani expand=True
+    tree.pack(fill=tk.X, pady=10)
+    scrollbar.place(in_=tree, relx=1.0, rely=0, relheight=1.0, bordermode="outside")
 
     # Pola do wprowadzenia danych
     entry_question = tk.Entry(edytor, width=70)
     entry_question.pack(pady=5)
+    set_placeholder(entry_question, "Treść pytania")
 
     combo_type = ttk.Combobox(edytor, values=["Sprawdzenie wiedzy", "Sesja egzaminacyjna"])
     combo_type.pack(pady=5)
+    combo_type.current(0)
 
-    entry_correct = tk.Entry(edytor, width=70)
-    entry_correct.pack(pady=5)
+    entry_question = tk.Entry(edytor, width=70)
+    entry_question.pack(pady=5)
+    set_placeholder(entry_question, "Odpowiedź na pytanie")
 
     # Instrukcja pod polami
     label_help = tk.Label(
         edytor,
         text="Dla 'Sprawdzenie wiedzy' wpisz jedną odpowiedź jako poprawną.\nDla 'Sesja egzaminacyjna' otworzy się dodatkowe okno do wpisania 4 opcji i poprawnej litery (A/B/C/D).",
-        bg="#f2f2f2",
+        bg="#e2dbd8",
         fg="gray"
     )
     label_help.pack(pady=2)
