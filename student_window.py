@@ -94,7 +94,7 @@ def uruchom_okno_student(login):
     logo_photo = ImageTk.PhotoImage(logo_img)
     logo_label = tk.Label(okno, image=logo_photo, bg="#e2dbd8")
     logo_label.image = logo_photo
-    logo_label.place(x=300, y=-280)
+    logo_label.place(x=screen_width/2-400, y=-280)
     gif = Image.open("loading.gif")
     gif_frames = [ImageTk.PhotoImage(frame.copy().convert("RGBA")) for frame in ImageSequence.Iterator(gif)]
     gif_index = 0
