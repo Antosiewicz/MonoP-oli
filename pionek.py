@@ -20,7 +20,7 @@ def dzwiek_koniec():
 PIONEK_X = 25
 PIONEK_Y = 40
 LICZBA_POL = 38
-pos = [[12, 0], [36, 0], [0, 16], [24, 16]]
+pos = [[12, 0], [40, 30], [70, 0], [100, 30]]
 
 # Mapowanie numeru na nazwę koloru
 KOLORY_NAZWY = ['zolty', 'zielony', 'czerwony', 'niebieski']
