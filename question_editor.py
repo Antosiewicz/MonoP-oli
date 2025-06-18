@@ -161,8 +161,7 @@ def uruchom_edycje():
         for item in selected:
             values = tree.item(item, 'values')
             tree.delete(item)
-            questions[:] = [q for q in questions if q['text'] != values[0]]
-
+            questions[:] = [q for q in questions if q['text']]
     # Przyciski funkcyjne
     tk.Button(edytor, text="Dodaj Pytanie", command=add_question, fg="#d9dad9", bg="#750006", font='Georgia', width=20, height=1).pack(pady=5)
     tk.Button(edytor, text="Zapisz do pliku", command=save_to_file, fg="#d9dad9", bg="#750006", font='Georgia', width=20, height=1).pack(pady=5)
